@@ -1,6 +1,8 @@
 import React from 'react'
 
 const Candidates = ({candidates}) => {
+
+
     
     return (
         <div>
@@ -18,8 +20,9 @@ const Candidates = ({candidates}) => {
                                 case 1: return  "HR";
                                 case 2: return "Finance";
                             }
+                            console.log(candidate.resume)
                         })()}</h6>
-                        <h6 class="card-subtitle mb-2 text-mted">resume: click to download </h6>
+                        <h6 class="card-subtitle mb-2 text-mted">resume: <a href={'http://localhost:5000/api/resume?filename=' + candidate.resume } >click to download </a></h6>
                     </div>
                 </div>
             ))}
