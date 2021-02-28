@@ -1,3 +1,7 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable no-redeclare */
+/* eslint-disable no-fallthrough */
+
 /*import React, { Component } from 'react';
 import Candidates from './components/candidates'
 
@@ -187,8 +191,27 @@ class App extends Component {
     this.fileInput = React.createRef();
   }
 
-  componentDidMount() {
-    // get all entities - GET
+  
+
+  fetchData = e => {
+
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'X-ADMIN': 1
+      }
+    };
+
+    fetch('http://localhost:5000/api/candidate', requestOptions)
+      .then(res => res.json())
+      .then((data) => {
+        console.log(data.data)
+        if (data.status === 'success') {
+          this.setState({ candidates: data.data })
+        } else {
+          alert(data.message)
+        }
+      }).catch(console.log)
   }
 
   send(e) {
@@ -203,12 +226,19 @@ class App extends Component {
       body: formData
     }).then(res => res.json()).then((response) => {
       if (response.status === 'success') {
-        console.log("doneee")
+        console.log("doneee");
+
+        // eslint-disable-next-line default-case
+        switch (this.state.department_ID) {
+          case "it": var department_ID = "0";
+          case "hr": var department_ID = "1";
+          case "finance": var department_ID = "2";
+        }
         const data = {
           full_name: this.state.full_name,
           date_of_birth: this.state.date_of_birth,
           years_of_experience: this.state.years_of_experience,
-          department_ID: this.state.department_ID,
+          department_ID: department_ID,
           resume: response.data
         }
         console.log(data)
@@ -218,7 +248,11 @@ class App extends Component {
           body: JSON.stringify(data),
           headers: { 'Content-Type': 'application/json' }
         }).then(res => res.json()).then(response2 => {
-          alert(response2.status);
+          if(response2==='success'){
+            alert("response2.status");
+          }else{
+            alert("JSON.stringify(response2.message)");
+          }
 
         })
 
@@ -299,6 +333,30 @@ class App extends Component {
               </form>
             </div>
           </div>
+          <br/>
+          <div>
+            <center><button className="btn btn-primary" type='button' onClick={(e) => this.fetchData(e)}>get candidates list</button></center>
+            <center><h1>candidates list</h1></center>
+            {this.state.candidates.map((candidate) => (
+                <div class="card">
+                    <div class="card-body">
+                        <h4 clas="card-title">{candidate.full_name}</h4>
+                        <h6 class="card-subtitle mb-2 text-mted">date of birth: {candidate.date_of_birth}</h6>
+                        <h6 class="card-subtitle mb-2 text-mted">years of experience: {candidate.years_of_experience}</h6>
+                        <h6 class="card-subtitle mb-2 text-mted">department ID: {(() => {
+                            // eslint-disable-next-line default-case
+                            switch (candidate.department_ID) {
+                                case 0: return  "IT";
+                                case 1: return  "HR";
+                                case 2: return "Finance";
+                            }
+                            console.log(candidate.resume)
+                        })()}</h6>
+                        <h6 class="card-subtitle mb-2 text-mted">resume: <a href='#' onClick={(e) => this.download(e)} >click to download </a></h6>
+                    </div>
+                </div>
+            ))}
+        </div>
         </div>
     );
   }
