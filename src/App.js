@@ -192,7 +192,32 @@ class App extends Component {
   }
 
   
+  download = e => {
 
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'X-ADMIN': 1
+      }
+    };
+
+    fetch('http://localhost:5000/api/resume?filename=' + e, requestOptions)
+      .then(res => {
+        res.blob().then(blob => {
+
+          let url = window.URL.createObjectURL(blob);
+					let a = document.createElement('a');
+					a.href = url;
+					a.download = e;
+					a.click();
+        })
+      })
+      .then((data) => {
+        alert(data.message);
+      }).catch(console.log)
+  }
+
+  
   fetchData = e => {
 
     const requestOptions = {
@@ -215,7 +240,6 @@ class App extends Component {
   }
 
   send(e) {
-    // add entity - POST
     e.preventDefault();
 
 
@@ -227,13 +251,17 @@ class App extends Component {
     }).then(res => res.json()).then((response) => {
       if (response.status === 'success') {
         console.log("doneee");
-
-        // eslint-disable-next-line default-case
-        switch (this.state.department_ID) {
-          case "it": var department_ID = "0";
-          case "hr": var department_ID = "1";
-          case "finance": var department_ID = "2";
+        if(this.state.department_ID==="it"){
+          var department_ID = 0;
+        }else if(this.state.department_ID==="hr"){
+          var department_ID = 1;
+        }else if(this.state.department_ID==="finance"){
+          var department_ID = 2;
+        }else{
+          var department_ID = -1;
         }
+
+        
         const data = {
           full_name: this.state.full_name,
           date_of_birth: this.state.date_of_birth,
@@ -248,10 +276,10 @@ class App extends Component {
           body: JSON.stringify(data),
           headers: { 'Content-Type': 'application/json' }
         }).then(res => res.json()).then(response2 => {
-          if(response2==='success'){
-            alert("response2.status");
+          if(response2.status==='success'){
+            alert(response2.status);
           }else{
-            alert("JSON.stringify(response2.message)");
+            alert(response2.message);
           }
 
         })
@@ -352,7 +380,7 @@ class App extends Component {
                             }
                             console.log(candidate.resume)
                         })()}</h6>
-                        <h6 class="card-subtitle mb-2 text-mted">resume: <a href='#' onClick={(e) => this.download(e)} >click to download </a></h6>
+                        <h6 class="card-subtitle mb-2 text-mted">resume: <a href='#' onClick={(e) => this.download(candidate.resume)} >click to download </a></h6>
                     </div>
                 </div>
             ))}
