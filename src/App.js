@@ -191,7 +191,7 @@ class App extends Component {
     this.fileInput = React.createRef();
   }
 
-  
+  //fun. download the candidates resume for admin
   download = e => {
 
     const requestOptions = {
@@ -217,7 +217,7 @@ class App extends Component {
       }).catch(console.log)
   }
 
-  
+  //geting candidates data from api for admin
   fetchData = e => {
 
     const requestOptions = {
@@ -239,6 +239,7 @@ class App extends Component {
       }).catch(console.log)
   }
 
+  //sending candidates to the api
   send(e) {
     e.preventDefault();
 
@@ -363,6 +364,8 @@ class App extends Component {
           </div>
           <br/>
           <div>
+
+            
             <center><button className="btn btn-primary" type='button' onClick={(e) => this.fetchData(e)}>get candidates list</button></center>
             <center><h1>candidates list</h1></center>
             {this.state.candidates.map((candidate) => (
